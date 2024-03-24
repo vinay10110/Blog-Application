@@ -1,34 +1,24 @@
-require('dotenv').config();
-const express=require('express');
-const bcrypt=require('bcrypt');
-const User=require('./models/User');
-const Post=require('./models/Post');
-const cors=require('cors');
-const path=require('path');
-const jwt=require('jsonwebtoken');
-const mongoose = require('mongoose');
-const cookieparser=require('cookie-parser');
-const multer=require('multer');
+const express = require('express');
+const cors = require('cors');
+const mongoose = require("mongoose");
+const User = require('./models/User');
+const Post = require('./models/Post');
+const bcrypt=require('bcrypt')
+const app = express();
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/' });
-const fs=require('fs');
-const app=express();
-app.use('/uploads', express.static(__dirname + '/uploads'));
-const corsoptions={
-  origin:`${process.env.HOST_ADDRESS}`,
-  credentials:true,
-  methods:['GET','PUT','POST','DELETE'],
-  header:{
-    'Access-Control-Allow-Credentials':true,
-    'Access-Control-Allow-Methods':['GET','PUT','POST','DELETE'],
-   
-  }
-}
-app.use(cors(corsoptions));
+const fs = require('fs');
+const salt = bcrypt.genSaltSync(10);
+const secret = 'asdfe45we45w345wegw345werjktjwertkj';
+app.use(cors({credentials:true,origin:'http://localhost:3000'}));
 app.use(express.json());
-app.use(cookieparser());
-const salt=bcrypt.genSaltSync(10);
-const secret='dsg3yugr838fg83efh93f93hf93f';
-mongoose.connect(`${process.env.MONGO_URL}`)
+app.use(cookieParser());
+app.use('/uploads', express.static(__dirname + '/uploads'));
+
+mongoose.connect('mongodb+srv://vinaychakravarthi10110:Ex6VfRQZStpUZMDH@cluster0.hmjfq34.mongodb.net/?retryWrites=true&w=majority');
+
 app.post('/register', async (req,res) => {
   const {username,password} = req.body;
   try{
@@ -48,7 +38,7 @@ app.post('/login', async (req,res) => {
   const userDoc = await User.findOne({username});
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
-    
+    // logged in
     jwt.sign({username,id:userDoc._id}, secret, {}, (err,token) => {
       if (err) throw err;
       res.cookie('token', token).json({
@@ -79,7 +69,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req,res) => {
   const ext = parts[parts.length - 1];
   const newPath = path+'.'+ext;
   fs.renameSync(path, newPath);
-
   const {token} = req.cookies;
   jwt.verify(token, secret, {}, async (err,info) => {
     if (err) throw err;
@@ -112,24 +101,22 @@ app.put('/post',uploadMiddleware.single('file'), async (req,res) => {
     const {id,title,summary,content} = req.body;
     const postDoc = await Post.findById(id);
     const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-    if(!isAuthor){
-      return res.status(400).json("your are not the Author");
+    if (!isAuthor) {
+      return res.status(400).json('you are not the author');
     }
-    await postDoc.updateOne({
+    await postDoc.update({
       title,
       summary,
       content,
-      cover: newPath?newPath:postDoc.cover,
-    })
-    res.json(postDoc);
-  
+      cover: newPath ? newPath : postDoc.cover,
+    });
 
-  
+    res.json(postDoc);
   });
 
 });
 
-app.get('/post', async (req,res) => {
+app.get('/post', async (req,res) => { 
   res.json(
     await Post.find()
       .populate('author', ['username'])
@@ -144,4 +131,5 @@ app.get('/post/:id', async (req, res) => {
   res.json(postDoc);
 })
 
-app.listen(`${process.env.PORT_ADDRESS}`);
+app.listen(4000);
+//
