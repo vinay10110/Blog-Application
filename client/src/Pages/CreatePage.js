@@ -2,7 +2,7 @@ import 'react-quill/dist/quill.snow.css';
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import Editor from "../Editor";
-import FileBase64 from 'react-file-base64';
+import FileBase from 'react-file-base64';
 
 export default function CreatePost() {
   const [title, setTitle] = useState('');
@@ -17,16 +17,17 @@ export default function CreatePost() {
       title,
       summary,
       content,
-      image: fileData.base64 // Assuming the key to send the image data is 'image'
+      fileData
     };
     const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/post`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data),
+      body:JSON.stringify(data),
       credentials: 'include',
     });
+    console.log(data);
     if (response.ok) {
       setRedirect(true);
     }
@@ -48,9 +49,9 @@ export default function CreatePost() {
         required
         value={summary}
         onChange={ev => setSummary(ev.target.value)} />
-      <FileBase64
+      <FileBase type="file"
         multiple={false}
-        onDone={({ base64 }) => setFileData({ base64 })}
+        onDone={({ base64 }) => setFileData( base64 )}
       />
       <Editor value={content} onChange={setContent} />
       <button style={{ marginTop: '5px' }}>Create post</button>

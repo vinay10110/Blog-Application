@@ -1,13 +1,13 @@
 import {useEffect, useState} from "react";
 import {Navigate, useParams} from "react-router-dom";
 import Editor from "../Editor";
-
+import FileBase from 'react-file-base64'
 export default function EditPost() {
   const {id} = useParams();
   const [title,setTitle] = useState('');
   const [summary,setSummary] = useState('');
   const [content,setContent] = useState('');
-  const [files, setFiles] = useState('');
+  const [fileData, setFileData] = useState('');
   const [redirect,setRedirect] = useState(false);
 
   useEffect(() => {
@@ -28,9 +28,7 @@ export default function EditPost() {
     data.set('summary', summary);
     data.set('content', content);
     data.set('id', id);
-    if (files?.[0]) {
-      data.set('file', files?.[0]);
-    }
+    data.set('fileData',fileData);
     const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/post`, {
       method: 'PUT',
       body: data,
@@ -55,8 +53,9 @@ export default function EditPost() {
              placeholder={'Summary'}
              value={summary}
              onChange={ev => setSummary(ev.target.value)} />
-      <input type="file"
-             onChange={ev => setFiles(ev.target.files)} />
+      <FileBase type="file"
+                 multiple={false}
+                 onDone={({ base64 }) => setFileData( base64 )} />
       <Editor onChange={setContent} value={content} />
       <button style={{marginTop:'5px'}}>Update post</button>
     </form>

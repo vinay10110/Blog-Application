@@ -35,7 +35,7 @@ export default function PostPage() {
         </div>
       )}
       <div className="image">
-        <img src={`${process.env.REACT_APP_SERVER_ADDRESS}/${postInfo.cover}`} alt=""/>
+        <img src={`${postInfo.fileData}`} alt=""/>
       </div>
       <div className="content" dangerouslySetInnerHTML={{__html:postInfo.content}} />
     </div>

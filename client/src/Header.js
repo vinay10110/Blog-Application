@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom';
 import { UserContext } from './UserContext';
-import axios from 'axios'
 const Header = () => {
   const {setUserInfo,userInfo}=useContext(UserContext)
 

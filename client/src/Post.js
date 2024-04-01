@@ -1,13 +1,13 @@
 import {formatISO9075} from "date-fns";
 import {Link} from "react-router-dom";
 
-export default function Post({_id,title,summary,cover,createdAt,author}) {
+export default function Post({_id,title,summary,fileData,createdAt,author}) {
 
   return (
     <div className="post">
       <div className="image">
         <Link to={`/post/${_id}`}>
-          <img src={`${process.env.REACT_APP_SERVER_ADDRESS}/`+cover} alt=""/>
+          <img src={fileData} alt=""/>
         </Link>
       </div>
       <div className="texts">
@@ -15,7 +15,7 @@ export default function Post({_id,title,summary,cover,createdAt,author}) {
         <h2>{title}</h2>
         </Link>
         <p className="info">
-          <a href="#" className="author" >{author.username}</a>
+          <a href="#" className="author" ></a>
           <time>{formatISO9075(new Date(createdAt))}</time>
         </p>
         <p className="summary">{summary}</p>

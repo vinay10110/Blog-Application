@@ -7,17 +7,15 @@ const bcrypt=require('bcrypt')
 const app = express();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const multer = require('multer');
-const uploadMiddleware = multer({ dest: 'uploads/' });
-const fs = require('fs');
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
+const bodyParser=require('body-parser')
 app.use(cors({credentials:true,origin:'http://localhost:3000'}));
-app.use(express.json());
 app.use(cookieParser());
-app.use('/uploads', express.static(__dirname + '/uploads'));
-
-mongoose.connect('mongodb+srv://vinaychakravarthi10110:Ex6VfRQZStpUZMDH@cluster0.hmjfq34.mongodb.net/?retryWrites=true&w=majority');
+app.use(bodyParser.json({ limit: '30mb', extended: true }))
+app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }))
+app.use(express.json())
+mongoose.connect('mongodb+srv://vinaychakravarthi10110:Vo4W2aCCwodu7R0F@clusterk.y84cuo9.mongodb.net/?retryWrites=true&w=majority&appName=Clusterk');
 
 app.post('/register', async (req,res) => {
   const {username,password} = req.body;
@@ -63,44 +61,35 @@ app.post('/logout', (req,res) => {
   res.cookie('token', '').json('ok');
 });
 
-app.post('/post', uploadMiddleware.single('file'), async (req,res) => {
-  const {originalname,path} = req.file;
-  const parts = originalname.split('.');
-  const ext = parts[parts.length - 1];
-  const newPath = path+'.'+ext;
-  fs.renameSync(path, newPath);
+app.post('/post', async (req,res) => {
   const {token} = req.cookies;
   jwt.verify(token, secret, {}, async (err,info) => {
     if (err) throw err;
-    const {title,summary,content} = req.body;
-    const postDoc = await Post.create({
-      title,
-      summary,
-      content,
-      cover:newPath,
-      author:info.id,
-    });
-    res.json(postDoc);
+    const {title,summary,content,fileData} = req.body;
+   
+    const newPostMessage = new Post({ title, summary, content,fileData,author:info.id })
+
+    try {
+        await newPostMessage.save();
+
+        res.status(201).json(newPostMessage );
+    } catch (error) {
+        res.status(409).json({ message: error.message });
+    }
   });
 
 });
 
-app.put('/post',uploadMiddleware.single('file'), async (req,res) => {
-  let newPath = null;
-  if (req.file) {
-    const {originalname,path} = req.file;
-    const parts = originalname.split('.');
-    const ext = parts[parts.length - 1];
-    newPath = path+'.'+ext;
-    fs.renameSync(path, newPath);
-  }
-
+app.put('/post', async (req,res) => {
+  
   const {token} = req.cookies;
   jwt.verify(token, secret, {}, async (err,info) => {
     if (err) throw err;
-    const {id,title,summary,content} = req.body;
+    const {id,title,summary,content,fileData,author} = req.body;
     const postDoc = await Post.findById(id);
-    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    console.log(author);
+    console.log(info.id);
+    const isAuthor = (author) == (info.id);
     if (!isAuthor) {
       return res.status(400).json('you are not the author');
     }
@@ -108,7 +97,7 @@ app.put('/post',uploadMiddleware.single('file'), async (req,res) => {
       title,
       summary,
       content,
-      cover: newPath ? newPath : postDoc.cover,
+      fileData
     });
 
     res.json(postDoc);
