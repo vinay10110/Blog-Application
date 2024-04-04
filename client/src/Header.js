@@ -6,6 +6,7 @@ const Header = () => {
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/profile`, {
+      method:'GET',
       credentials: 'include',
     }).then(response => {
       response.json().then(userInfo => {
