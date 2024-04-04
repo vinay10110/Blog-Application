@@ -23,15 +23,19 @@ export default function EditPost() {
 
   async function updatePost(ev) {
     ev.preventDefault();
-    const data = new FormData();
-    data.set('title', title);
-    data.set('summary', summary);
-    data.set('content', content);
-    data.set('id', id);
-    data.set('fileData',fileData);
+    const data = {
+      id,
+      title,
+      summary,
+      content,
+      fileData
+    };
     const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/post`, {
       method: 'PUT',
-      body: data,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify(data),
       credentials: 'include'
     });
     if (response.ok) {

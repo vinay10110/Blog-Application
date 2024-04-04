@@ -12,11 +12,10 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
 app.use(cors({credentials:true,origin:'http://localhost:3000'}));
 app.use(cookieParser());
-app.use(bodyParser.json({ limit: '30mb', extended: true }))
-app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }))
+app.use(bodyParser.json({ limit: '50mb', extended: true }))
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 app.use(express.json())
 mongoose.connect('mongodb+srv://vinaychakravarthi10110:Vo4W2aCCwodu7R0F@clusterk.y84cuo9.mongodb.net/?retryWrites=true&w=majority&appName=Clusterk');
-
 app.post('/register', async (req,res) => {
   const {username,password} = req.body;
   try{
@@ -36,7 +35,6 @@ app.post('/login', async (req,res) => {
   const userDoc = await User.findOne({username});
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
-    // logged in
     jwt.sign({username,id:userDoc._id}, secret, {}, (err,token) => {
       if (err) throw err;
       res.cookie('token', token).json({
@@ -48,7 +46,6 @@ app.post('/login', async (req,res) => {
     res.status(400).json('wrong credentials');
   }
 });
-
 app.get('/profile', (req,res) => {
   const {token} = req.cookies;
   jwt.verify(token, secret, {}, (err,info) => {
@@ -68,43 +65,47 @@ app.post('/post', async (req,res) => {
     const {title,summary,content,fileData} = req.body;
    
     const newPostMessage = new Post({ title, summary, content,fileData,author:info.id })
-
     try {
         await newPostMessage.save();
-
         res.status(201).json(newPostMessage );
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
   });
-
 });
-
 app.put('/post', async (req,res) => {
-  
   const {token} = req.cookies;
   jwt.verify(token, secret, {}, async (err,info) => {
     if (err) throw err;
-    const {id,title,summary,content,fileData,author} = req.body;
+    const {id,title,summary,content,fileData} = req.body;
     const postDoc = await Post.findById(id);
-    console.log(author);
-    console.log(info.id);
-    const isAuthor = (author) == (info.id);
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
     if (!isAuthor) {
       return res.status(400).json('you are not the author');
     }
-    await postDoc.update({
+    const updatedPost = await Post.findByIdAndUpdate( id,{
       title,
       summary,
       content,
       fileData
-    });
-
-    res.json(postDoc);
+    }); 
+    res.json(updatedPost);
   });
-
 });
-
+app.delete('/post',async(req,res)=>{
+  const {token}=req.cookies;
+  jwt.verify(token,secret,{},async(err,info)=>{
+    if(err) throw err;
+    const {id} = req.body;
+    const postDoc = await Post.findById(id);
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    if (!isAuthor) {
+      return res.status(400).json('you are not the author');
+    }
+    await postDoc.deleteOne();
+    res.json({message:"deleted succesfully"})
+  })
+})
 app.get('/post', async (req,res) => { 
   res.json(
     await Post.find()
@@ -119,6 +120,4 @@ app.get('/post/:id', async (req, res) => {
   const postDoc = await Post.findById(id).populate('author', ['username']);
   res.json(postDoc);
 })
-
 app.listen(4000);
-//

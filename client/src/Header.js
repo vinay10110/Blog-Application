@@ -5,7 +5,7 @@ const Header = () => {
   const {setUserInfo,userInfo}=useContext(UserContext)
 
   useEffect(() => {
-    fetch(`${process.env.HOST_ADDRESS}/profile`, {
+    fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/profile`, {
       credentials: 'include',
     }).then(response => {
       response.json().then(userInfo => {
@@ -46,4 +46,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default Header;

@@ -27,7 +27,7 @@ export default function CreatePost() {
       body:JSON.stringify(data),
       credentials: 'include',
     });
-    console.log(data);
+    
     if (response.ok) {
       setRedirect(true);
     }
