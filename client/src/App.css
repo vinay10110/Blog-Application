@@ -28,7 +28,7 @@ header a{
 }
 header a.logo{
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 2.5rem;
 }
 header nav{
   display:flex;
@@ -40,6 +40,11 @@ div.post{
   grid-template-columns: 1fr;
   gap: 20px;
   margin-bottom: 30px;
+  transition: transform 0.3s ease-in-out;
+}
+div.post:hover{
+  transform: scale(1.09);
+  box-shadow:5px 5px 5px grey;
 }
 @media screen and (min-width: 700px) {
   div.post{
