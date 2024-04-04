@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser');
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
-app.use(cors({credentials:true,origin:'http://localhost:3000'}));
+app.use(cors({credentials:true,origin:`${process.env.HOST_ADDRESS}`}));
 app.use(cookieParser());
 app.use(bodyParser.json({ limit: '50mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
