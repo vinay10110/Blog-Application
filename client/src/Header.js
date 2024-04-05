@@ -11,9 +11,7 @@ const Header = () => {
         setUserInfo(userInfo);
       });
     });
-  }, []);
-  console.log(setUserInfo);
-  console.log(userInfo);
+  },[]);
   function logout(){
     fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/logout`,{
       method:'POST',

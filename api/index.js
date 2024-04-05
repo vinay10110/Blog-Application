@@ -64,9 +64,8 @@ app.post('/logout', (req,res) => {
 
 app.post('/post', async (req,res) => {
   const {token} = req.cookies;
-  jwt.verify(token, secret, {}, async (err,info) => {
-    console.log(token);
-    if (err) throw err;
+ 
+  
     const {title,summary,content,fileData} = req.body;
    
     const newPostMessage = new Post({ title, summary, content,fileData,author:info.id })
@@ -76,7 +75,7 @@ app.post('/post', async (req,res) => {
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
-  });
+ 
 });
 app.put('/post', async (req,res) => {
   const {token} = req.cookies;
