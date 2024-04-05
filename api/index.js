@@ -65,6 +65,7 @@ app.post('/logout', (req,res) => {
 app.post('/post', async (req,res) => {
   const {token} = req.cookies;
   jwt.verify(token, secret, {}, async (err,info) => {
+    console.log(token);
     if (err) throw err;
     const {title,summary,content,fileData} = req.body;
    
