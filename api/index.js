@@ -11,13 +11,13 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
 app.use(cors({
-  origin: 'https://blog-application-lovat.vercel.app',
+  origin: 'https://blog-application-1-cxbt.onrender.com',
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
   credentials:true
 }));
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blog-application-lovat.vercel.app');
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog-application-1-cxbt.onrender.com');
   next();
 });
 app.use(cookieParser());
