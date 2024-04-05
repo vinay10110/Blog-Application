@@ -4,7 +4,7 @@ import { UserContext } from './UserContext';
 const Header = () => {
   const {setUserInfo,userInfo}=useContext(UserContext)
 
-  useEffect(() => {
+ 
     const fetchUserInfo = async () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/profile`, {
@@ -22,8 +22,8 @@ const Header = () => {
       }
     };
 
-    fetchUserInfo();
-  }, [setUserInfo]);
+    
+  
 
   
   function logout(){
