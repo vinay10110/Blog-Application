@@ -16,6 +16,10 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
   credentials:true
 }));
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog-application-lovat.vercel.app');
+  next();
+});
 app.use(cookieParser());
 app.use(bodyParser.json({ limit: '50mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
@@ -62,6 +66,7 @@ app.post('/post', async (req,res) => {
   const token = req.headers.authorization;
   const tokenParts = token.split(' ');
   const toker = tokenParts[1];
+  console.log(toker);
   jwt.verify(toker, secret, {}, async (err,info) => {
     if (err) throw err;
     const {title,summary,content,fileData} = req.body;
