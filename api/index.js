@@ -13,7 +13,8 @@ const bodyParser=require('body-parser')
 app.use(cors({
   origin: 'https://blogapp-rho-seven.vercel.app',
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
+  credentials:true
 }));
 app.use(cookieParser());
 app.use(bodyParser.json({ limit: '50mb', extended: true }))
