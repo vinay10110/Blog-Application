@@ -10,7 +10,6 @@ const cookieParser = require('cookie-parser');
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
-app.use(cors({credentials:true,origin:`${process.env.HOST_ADDRESS}`}));
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://blogapp-3nbfx67yh-vinay10110s-projects.vercel.app');
   next();
