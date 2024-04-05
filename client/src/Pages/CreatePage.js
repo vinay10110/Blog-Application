@@ -14,7 +14,7 @@ export default function CreatePost() {
   async function createNewPost(ev) {
     ev.preventDefault();
     const token=localStorage.getItem('token');
-    
+    console.log(token);
     const data = {
       title,
       summary,
