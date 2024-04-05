@@ -3,17 +3,19 @@ import { Link, Navigate } from 'react-router-dom';
 import { UserContext } from './UserContext';
 const Header = () => {
   const {setUserInfo,userInfo}=useContext(UserContext)
-
-  useEffect(() => {
+console.log(setUserInfo);
+console.log(userInfo);
+ 
     const fetchUserInfo = async () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/profile`, {
           method: 'GET',
           credentials: 'include',
         });
+      
         if (response.ok) {
           const userInfoData = await response.json();
-          setUserInfo(userInfoData);
+          setUserInfo(userInfo);
         } else {
           throw new Error('Failed to fetch user info');
         }
@@ -22,8 +24,8 @@ const Header = () => {
       }
     };
 
-    fetchUserInfo();
-  }, [setUserInfo]);
+    
+  
 
   
   function logout(){

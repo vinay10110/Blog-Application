@@ -34,7 +34,6 @@ app.post('/register', async (req,res) => {
     res.status(400).json(e);
   }
 });
-
 app.post('/login', async (req,res) => {
   const {username,password} = req.body;
   const userDoc = await User.findOne({username});
@@ -46,6 +45,7 @@ app.post('/login', async (req,res) => {
         id:userDoc._id,
         username,
       });
+      console.log(token)
     });
   } else {
     res.status(400).json('wrong credentials');
@@ -53,12 +53,12 @@ app.post('/login', async (req,res) => {
 });
 app.get('/profile', (req,res) => {
   const {token} = req.cookies;
+ 
   jwt.verify(token, secret, {}, (err,info) => {
     if (err) throw err;
     res.json(info);
   });
 });
-
 app.post('/logout', (req,res) => {
   res.cookie('token', '').json('ok');
 });
