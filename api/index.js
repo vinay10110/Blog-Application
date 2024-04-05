@@ -10,14 +10,11 @@ const cookieParser = require('cookie-parser');
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
-app.use(cors());
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'https://blogapp-rho-seven.vercel.app');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-  res.sendStatus(200);
-  console.log("header.......");
-});
+app.use(cors({
+  origin: 'https://blogapp-rho-seven.vercel.app',
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With']
+}));
 app.use(cookieParser());
 app.use(bodyParser.json({ limit: '50mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
