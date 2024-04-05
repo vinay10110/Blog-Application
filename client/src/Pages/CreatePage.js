@@ -26,6 +26,7 @@ export default function CreatePost() {
       },
       body:JSON.stringify(data),
       credentials: 'include',
+      mode:'no-cors'
     });
     
     if (response.ok) {
