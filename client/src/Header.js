@@ -3,13 +3,6 @@ import { Link, Navigate } from 'react-router-dom';
 import { UserContext } from './UserContext';
 const Header = () => {
   const {setUserInfo,userInfo}=useContext(UserContext)
-<<<<<<< HEAD
-console.log(setUserInfo);
-console.log(userInfo);
-=======
-
->>>>>>> 988154245771dbcce2475c99988cbafda2748cec
- 
     const fetchUserInfo = async () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/profile`, {
@@ -27,11 +20,6 @@ console.log(userInfo);
         console.error('Error fetching user info:', error);
       }
     };
-
-    
-  
-
-  
   function logout(){
     fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/logout`,{
       method:'POST',
