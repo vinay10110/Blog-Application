@@ -11,7 +11,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://blog-application-lovat.vercel.app',
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
   credentials:true
