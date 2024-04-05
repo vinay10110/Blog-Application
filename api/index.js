@@ -11,7 +11,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
 app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'https://blogapp-fq45.vercel.app/');
+  res.header('Access-Control-Allow-Origin', 'https://blogapp-rho-seven.vercel.app');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
   res.sendStatus(200);
