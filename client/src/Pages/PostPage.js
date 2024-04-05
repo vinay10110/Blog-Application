@@ -23,9 +23,11 @@ export default function PostPage() {
     const data={
       id
     }
+    const token=localStorage.getItem('token')
     const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/post`, {
       method: 'DELETE',
       headers: {
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body:JSON.stringify(data),

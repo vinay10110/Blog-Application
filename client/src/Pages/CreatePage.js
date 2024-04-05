@@ -13,6 +13,8 @@ export default function CreatePost() {
 
   async function createNewPost(ev) {
     ev.preventDefault();
+    const token=localStorage.getItem('token');
+    
     const data = {
       title,
       summary,
@@ -22,11 +24,12 @@ export default function CreatePost() {
     const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/post`, {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body:JSON.stringify(data),
       credentials: 'include',
-      mode:'no-cors'
+
     });
     
     if (response.ok) {

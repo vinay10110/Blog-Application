@@ -21,8 +21,6 @@ const LoginPage = () => {
      setUserInfo(userInfo)
     setRedirect(true);
    })
-        
-      
     } else {
       alert('wrong credentials');
     }

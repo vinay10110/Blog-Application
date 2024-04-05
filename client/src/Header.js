@@ -9,9 +9,12 @@ const Header = () => {
     }).then(response => {
       response.json().then(userInfo => {
         setUserInfo(userInfo);
+        localStorage.setItem('token',userInfo.token);
       });
     });
   },[]);
+  
+
   function logout(){
     fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/logout`,{
       method:'POST',

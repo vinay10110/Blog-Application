@@ -22,6 +22,7 @@ export default function EditPost() {
   }, []);
 
   async function updatePost(ev) {
+    const token =localStorage.getItem('token')
     ev.preventDefault();
     const data = {
       id,
@@ -33,6 +34,7 @@ export default function EditPost() {
     const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/post`, {
       method: 'PUT',
       headers: {
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body:JSON.stringify(data),

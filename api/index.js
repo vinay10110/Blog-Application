@@ -11,7 +11,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
 app.use(cors({
-  origin: 'https://blog-application-lovat.vercel.app',
+  origin: 'http://localhost:3000',
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
   credentials:true
@@ -38,14 +38,10 @@ app.post('/login', async (req,res) => {
   const {username,password} = req.body;
   const userDoc = await User.findOne({username});
   const passOk = bcrypt.compareSync(password, userDoc.password);
+  const id=userDoc.id;
   if (passOk) {
-    jwt.sign({username,id:userDoc._id}, secret, {}, (err,token) => {
-      if (err) throw err;
-      res.cookie('token', token).json({
-        id:userDoc._id,
-        username,
-      });
-    });
+     const token=jwt.sign({username,id:userDoc._id}, secret, {expiresIn:'1h'});
+     res.json({username,id,token})
   } else {
     res.status(400).json('wrong credentials');
   }
@@ -63,24 +59,27 @@ app.post('/logout', (req,res) => {
 });
 
 app.post('/post', async (req,res) => {
-  const {token} = req.cookies;
- 
-  
+  const token = req.headers.authorization;
+  const tokenParts = token.split(' ');
+  const toker = tokenParts[1];
+  jwt.verify(toker, secret, {}, async (err,info) => {
+    if (err) throw err;
     const {title,summary,content,fileData} = req.body;
    
-    const newPostMessage = new Post({ title, summary, content,fileData })
+    const newPostMessage = new Post({ title, summary, content,fileData,author:info.id })
     try {
         await newPostMessage.save();
         res.status(201).json(newPostMessage );
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
- 
+  });
 });
 app.put('/post', async (req,res) => {
-  const {token} = req.cookies;
-  console.log(token);
-  jwt.verify(token, secret, {}, async (err,info) => {
+  const token = req.headers.authorization;
+  const tokenParts = token.split(' ');
+  const toker = tokenParts[1];
+  jwt.verify(toker, secret, {}, async (err,info) => {
     if (err) throw err;
     const {id,title,summary,content,fileData} = req.body;
     const postDoc = await Post.findById(id);
@@ -98,8 +97,10 @@ app.put('/post', async (req,res) => {
   });
 });
 app.delete('/post',async(req,res)=>{
-  const {token}=req.cookies;
-  jwt.verify(token,secret,{},async(err,info)=>{
+  const token = req.headers.authorization;
+  const tokenParts = token.split(' ');
+  const toker = tokenParts[1];
+  jwt.verify(toker,secret,{},async(err,info)=>{
     if(err) throw err;
     const {id} = req.body;
     const postDoc = await Post.findById(id);
