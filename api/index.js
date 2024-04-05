@@ -11,7 +11,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
 app.use(cors({
-  origin: 'https://blog-application-hhe1vd4bv-vinay10110s-projects.vercel.app',
+  origin: 'https://blog-application-lovat.vercel.app/',
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
   credentials:true
@@ -45,7 +45,6 @@ app.post('/login', async (req,res) => {
         id:userDoc._id,
         username,
       });
-      console.log(token)
     });
   } else {
     res.status(400).json('wrong credentials');
@@ -80,6 +79,7 @@ app.post('/post', async (req,res) => {
 });
 app.put('/post', async (req,res) => {
   const {token} = req.cookies;
+  console.log(token);
   jwt.verify(token, secret, {}, async (err,info) => {
     if (err) throw err;
     const {id,title,summary,content,fileData} = req.body;
