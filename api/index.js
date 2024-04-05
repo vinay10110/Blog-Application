@@ -14,7 +14,7 @@ app.use(cors({
   origin: 'https://blog-application-lovat.vercel.app',
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
-  credentials:true
+  credentials:'include'
 }));
 app.use(cookieParser());
 app.use(bodyParser.json({ limit: '50mb', extended: true }))
