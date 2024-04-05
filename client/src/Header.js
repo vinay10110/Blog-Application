@@ -9,7 +9,6 @@ const Header = () => {
     }).then(response => {
       response.json().then(userInfo => {
         setUserInfo(userInfo);
-        localStorage.setItem('token',userInfo.token);
       });
     });
   },[]);

@@ -1,8 +1,10 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState,useContext} from "react";
 import {Navigate, useParams} from "react-router-dom";
 import Editor from "../Editor";
 import FileBase from 'react-file-base64'
+import { UserContext } from '../UserContext';
 export default function EditPost() {
+  const {setUserInfo,userInfo}=useContext(UserContext)
   const {id} = useParams();
   const [title,setTitle] = useState('');
   const [summary,setSummary] = useState('');
@@ -22,7 +24,8 @@ export default function EditPost() {
   }, []);
 
   async function updatePost(ev) {
-    const token =localStorage.getItem('token')
+    const token =userInfo.token;
+    console.log(token)
     ev.preventDefault();
     const data = {
       id,

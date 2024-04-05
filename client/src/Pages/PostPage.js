@@ -23,7 +23,8 @@ export default function PostPage() {
     const data={
       id
     }
-    const token=localStorage.getItem('token')
+    const token=userInfo.token;
+    console.log(token)
     const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/post`, {
       method: 'DELETE',
       headers: {

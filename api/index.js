@@ -11,13 +11,13 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
 app.use(cors({
-  origin: 'https://blog-application-1-cxbt.onrender.com',
+  origin: 'https://blog-application-wj24.vercel.app',
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
   credentials:true
 }));
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blog-application-1-cxbt.onrender.com');
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog-application-wj24.vercel.app');
   next();
 });
 app.use(cookieParser());
@@ -67,11 +67,13 @@ app.post('/post', async (req,res) => {
   const tokenParts = token.split(' ');
   const toker = tokenParts[1];
   console.log(toker);
+  const {id}=jwt.decode(toker);
+  console.log(id);
   jwt.verify(toker, secret, {}, async (err,info) => {
     if (err) throw err;
     const {title,summary,content,fileData} = req.body;
    
-    const newPostMessage = new Post({ title, summary, content,fileData,author:info.id })
+    const newPostMessage = new Post({ title, summary, content,fileData,author:id })
     try {
         await newPostMessage.save();
         res.status(201).json(newPostMessage );
@@ -84,11 +86,12 @@ app.put('/post', async (req,res) => {
   const token = req.headers.authorization;
   const tokenParts = token.split(' ');
   const toker = tokenParts[1];
+  const person=jwt.decode(toker);
   jwt.verify(toker, secret, {}, async (err,info) => {
     if (err) throw err;
     const {id,title,summary,content,fileData} = req.body;
     const postDoc = await Post.findById(id);
-    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(person.id);
     if (!isAuthor) {
       return res.status(400).json('you are not the author');
     }
@@ -105,11 +108,12 @@ app.delete('/post',async(req,res)=>{
   const token = req.headers.authorization;
   const tokenParts = token.split(' ');
   const toker = tokenParts[1];
+  const person=jwt.decode(toker);
   jwt.verify(toker,secret,{},async(err,info)=>{
     if(err) throw err;
     const {id} = req.body;
     const postDoc = await Post.findById(id);
-    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(person.id);
     if (!isAuthor) {
       return res.status(400).json('you are not the author');
     }
