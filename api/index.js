@@ -68,7 +68,7 @@ app.post('/post', async (req,res) => {
   
     const {title,summary,content,fileData} = req.body;
    
-    const newPostMessage = new Post({ title, summary, content,fileData,author:info.id })
+    const newPostMessage = new Post({ title, summary, content,fileData })
     try {
         await newPostMessage.save();
         res.status(201).json(newPostMessage );
