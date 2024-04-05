@@ -5,15 +5,25 @@ const Header = () => {
   const {setUserInfo,userInfo}=useContext(UserContext)
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/profile`, {
-      method:'GET',
-      credentials: 'include',
-    }).then(response => {
-      response.json().then(userInfo => {
-        setUserInfo(userInfo);
-      });
-    });
-  }, []);
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/profile`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const userInfoData = await response.json();
+          setUserInfo(userInfoData);
+        } else {
+          throw new Error('Failed to fetch user info');
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, [setUserInfo]);
 
   
   function logout(){
