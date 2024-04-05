@@ -10,9 +10,11 @@ const cookieParser = require('cookie-parser');
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const bodyParser=require('body-parser')
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blogapp-3nbfx67yh-vinay10110s-projects.vercel.app');
-  next();
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'https://blogapp-fq45.vercel.app/');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+  res.sendStatus(200);
 });
 app.use(cookieParser());
 app.use(bodyParser.json({ limit: '50mb', extended: true }))
