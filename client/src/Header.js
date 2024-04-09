@@ -21,7 +21,7 @@ const Header = () => {
       }
     }
     
-  },[setUserInfo,userInfo]);
+  },[]);
   
 
   function logout(){

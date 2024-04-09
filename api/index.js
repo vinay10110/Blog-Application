@@ -74,7 +74,6 @@ app.get('/profile', (req,res) => {
 app.post('/logout', (req,res) => {
   res.cookie('token', '').json('ok');
 });
-
 app.post('/post', async (req,res) => {
   const token = req.headers.authorization;
   const tokenParts = token.split(' ');
@@ -140,7 +139,6 @@ app.get('/post', async (req,res) => {
       .limit(20)
   );
 });
-
 app.get('/post/:id', async (req, res) => {
   const {id} = req.params;
   const postDoc = await Post.findById(id).populate('author', ['username']);

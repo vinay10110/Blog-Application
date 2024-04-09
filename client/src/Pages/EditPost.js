@@ -22,8 +22,7 @@ export default function EditPost() {
           setFileData(postInfo.fileData);
         });
       });
-  }, []);
-
+  }, [id]);
   async function updatePost(ev) {
     const token =userInfo.token;
     ev.preventDefault();
