@@ -1,17 +1,27 @@
 import React, { useContext, useEffect } from 'react'
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { UserContext } from './UserContext';
 const Header = () => {
   const {setUserInfo,userInfo}=useContext(UserContext)
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/profile`, {
-      credentials: 'include',
-    }).then(response => {
-      response.json().then(userInfo => {
-        setUserInfo(userInfo);
-      });
-    });
-  },[]);
+    if(userInfo){
+      const token=userInfo.token;
+      if(token){
+        fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+        }).then(response => {
+          response.json().then(userInfo => {
+            setUserInfo(userInfo);
+          });
+        });
+      }
+    }
+    
+  },[setUserInfo,userInfo]);
   
 
   function logout(){
@@ -19,8 +29,8 @@ const Header = () => {
       method:'POST',
       credentials:'include',
     });
-    <Navigate to={'/'}/>
     setUserInfo(null);
+    
   }
   const username=userInfo?.username;
   return (
@@ -30,7 +40,7 @@ const Header = () => {
         {username && (
           <>
           <Link to={'/create'}>Create  new post</Link>
-          <a className="anchor" onClick={logout}>Logout ({username})</a>
+          <a href='/' className="anchor" onClick={logout}>Logout ({username})</a>
           </>
         )}
         {!username && (

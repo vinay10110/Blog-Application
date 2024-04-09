@@ -8,23 +8,24 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const salt = bcrypt.genSaltSync(10);
-const secret = 'asdfe45we45w345wegw345werjktjwertkj';
-const bodyParser=require('body-parser')
+const bodyParser=require('body-parser');
+require('dotenv').config();
+const secret=process.env.secret;
 app.use(cors({
-  origin: 'https://blog-application-wj24.vercel.app',
+  origin: `${process.env.HOST_ADDRESS}`,
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With'],
   credentials:true
 }));
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blog-application-wj24.vercel.app');
+  res.setHeader('Access-Control-Allow-Origin', `${process.env.HOST_ADDRESS}`);
   next();
 });
 app.use(cookieParser());
 app.use(bodyParser.json({ limit: '50mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 app.use(express.json())
-mongoose.connect('mongodb+srv://vinaychakravarthi10110:Vo4W2aCCwodu7R0F@clusterk.y84cuo9.mongodb.net/?retryWrites=true&w=majority&appName=Clusterk');
+mongoose.connect(`${process.env.MONGO_URL}`);
 app.post('/register', async (req,res) => {
   const {username,password} = req.body;
   try{
@@ -38,25 +39,37 @@ app.post('/register', async (req,res) => {
     res.status(400).json(e);
   }
 });
-app.post('/login', async (req,res) => {
-  const {username,password} = req.body;
-  const userDoc = await User.findOne({username});
-  const passOk = bcrypt.compareSync(password, userDoc.password);
-  const id=userDoc.id;
-  if (passOk) {
-     const token=jwt.sign({username,id:userDoc._id}, secret, {expiresIn:'1h'});
-     res.json({username,id,token})
-  } else {
-    res.status(400).json('wrong credentials');
+app.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const userDoc = await User.findOne({ username });
+    if (!userDoc) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const passOk = bcrypt.compareSync(password, userDoc.password);
+    const id = userDoc.id;
+    if (passOk) {
+      const token = jwt.sign({ username, id: userDoc._id }, secret, { expiresIn: '1h' });
+      return res.json({ username, id, token });
+    } else {
+      return res.status(400).json({ message: 'Wrong credentials' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 });
 app.get('/profile', (req,res) => {
-  const {token} = req.cookies;
- 
-  jwt.verify(token, secret, {}, (err,info) => {
-    if (err) throw err;
-    res.json(info);
-  });
+  const token = req.headers.authorization;
+  const tokenParts = token.split(' ');
+  const toker = tokenParts[1];
+  if(token){
+    jwt.verify(toker, secret, {}, (err,info) => {
+      if (err) throw err;
+      res.json(info);
+    });
+  }
+  
 });
 app.post('/logout', (req,res) => {
   res.cookie('token', '').json('ok');
@@ -66,9 +79,7 @@ app.post('/post', async (req,res) => {
   const token = req.headers.authorization;
   const tokenParts = token.split(' ');
   const toker = tokenParts[1];
-  console.log(toker);
   const {id}=jwt.decode(toker);
-  console.log(id);
   jwt.verify(toker, secret, {}, async (err,info) => {
     if (err) throw err;
     const {title,summary,content,fileData} = req.body;

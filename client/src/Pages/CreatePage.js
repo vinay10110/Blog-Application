@@ -5,7 +5,7 @@ import Editor from "../Editor";
 import FileBase from 'react-file-base64';
 import { UserContext } from '../UserContext';
 export default function CreatePost() {
-  const {setUserInfo,userInfo}=useContext(UserContext)
+  const {userInfo}=useContext(UserContext)
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');
   const [content, setContent] = useState('');
@@ -15,7 +15,6 @@ export default function CreatePost() {
   async function createNewPost(ev) {
     ev.preventDefault();
     const token=userInfo.token;
-    console.log(token);
     const data = {
       title,
       summary,

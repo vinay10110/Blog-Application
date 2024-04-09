@@ -4,19 +4,25 @@ import {formatISO9075} from "date-fns";
 import {UserContext} from "../UserContext";
 import {Link} from 'react-router-dom';
 import { Navigate } from "react-router-dom";
+import bin from '../assets/bin.png';
+import loadingAnime from '../assets/Animation - 1712636343373.json';
+import Lottie from 'lottie-react'
 export default function PostPage() {
   const [postInfo,setPostInfo] = useState(null);
   const [redirect,setRedirect]=useState(false);
+  const [loading,setLoading]=useState(false);
   const {userInfo} = useContext(UserContext);
   const {id} = useParams();
   useEffect(() => {
+    setLoading(true);
     fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/post/${id}`)
       .then(response => {
         response.json().then(postInfo => {
           setPostInfo(postInfo);
+          setLoading(false)
         });
       });
-  }, []);
+  }, [id]);
 
   if (!postInfo) return '';
   async function deletePost() {
@@ -24,7 +30,6 @@ export default function PostPage() {
       id
     }
     const token=userInfo.token;
-    console.log(token)
     const response = await fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/post`, {
       method: 'DELETE',
       headers: {
@@ -44,11 +49,15 @@ export default function PostPage() {
     return <Navigate to={'/'} />
   }
   return (
-    <div className="post-page">
+    <div>
+      {loading && <Lottie animationData={loadingAnime} className="lottie-logo"/>}
+      {!loading && 
+      <div className="post-page">
       <h1>{postInfo.title}</h1>
       <time>{formatISO9075(new Date(postInfo.createdAt))}</time>
       <div className="author">by @{postInfo.author.username}</div>
-      {userInfo.id === postInfo.author._id && (
+      <div className="btn-container">
+      {userInfo && userInfo.id === postInfo.author._id && ( 
         <div className="edit-row">
           <Link className="edit-btn" to={`/edit/${postInfo._id}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -56,18 +65,23 @@ export default function PostPage() {
             </svg>
             Edit this post
           </Link>
-          <div className="edit-btn">
-          <button className="edit-btn" onClick={deletePost}>
-           
-            Delete this post
-          </button>   
-          </div>
+          
         </div>
       )}
+      {userInfo && userInfo.id === postInfo.author._id && (
+        
+          <div className="delete-row">
+            
+          <a href='/' onClick={deletePost} className="edit-btn"><img src={bin} className="bin-icon" alt="bin-icon"></img>Delete this post</a>
+        </div>
+        
+      )}
+       </div>
       <div className="image">
-        <img src={`${postInfo.fileData}`} alt=""/>
+        <img src={`${postInfo.fileData}`} alt="post"/>
       </div>
       <div className="content" dangerouslySetInnerHTML={{__html:postInfo.content}} />
+    </div>}
     </div>
   );
 }

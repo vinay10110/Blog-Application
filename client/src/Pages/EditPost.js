@@ -4,7 +4,7 @@ import Editor from "../Editor";
 import FileBase from 'react-file-base64'
 import { UserContext } from '../UserContext';
 export default function EditPost() {
-  const {setUserInfo,userInfo}=useContext(UserContext)
+  const {userInfo}=useContext(UserContext);
   const {id} = useParams();
   const [title,setTitle] = useState('');
   const [summary,setSummary] = useState('');
@@ -19,13 +19,13 @@ export default function EditPost() {
           setTitle(postInfo.title);
           setContent(postInfo.content);
           setSummary(postInfo.summary);
+          setFileData(postInfo.fileData);
         });
       });
   }, []);
 
   async function updatePost(ev) {
     const token =userInfo.token;
-    console.log(token)
     ev.preventDefault();
     const data = {
       id,

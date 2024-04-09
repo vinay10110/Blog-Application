@@ -22,7 +22,12 @@ const LoginPage = () => {
     setRedirect(true);
    })
     } else {
-      alert('wrong credentials');
+      if(response.status===404){
+        alert('Username not found. Please register')
+      }
+      else{
+        alert('Invalid Credentials')
+      }
     }
   }
 
