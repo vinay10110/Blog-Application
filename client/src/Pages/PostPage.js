@@ -72,7 +72,7 @@ export default function PostPage() {
         
           <div className="delete-row">
             
-          <a href='/' onClick={deletePost} className="edit-btn"><img src={bin} className="bin-icon" alt="bin-icon"></img>Delete this post</a>
+          <a href='/' onClick={deletePost} className="edit-btn"><img src={bin} className="bin-icon" alt="bin-icon" />Delete this post</a>
         </div>
         
       )}
