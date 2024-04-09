@@ -166,8 +166,8 @@ a svg{
 }
 @media screen and (max-width: 700px) {
   .lottie-logo{
-    width:400px;
-    padding-left:150px;
+    width:270px;
+    padding-left:100px;
   }
   div.post{
     display: grid;
@@ -187,4 +187,7 @@ justify-content: space-between;
 }
 .bin-icon{
   width:20px;
+}
+.delete-row{
+  margin:0px;
 }
