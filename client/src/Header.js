@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { UserContext } from './UserContext';
@@ -6,6 +7,7 @@ const Header = () => {
   useEffect(() => {
     if(userInfo){
       const token=userInfo.token;
+      console.log("hello");
       if(token){
         fetch(`${process.env.REACT_APP_SERVER_ADDRESS}/profile`, {
           headers: {
